@@ -52,24 +52,20 @@ depends_lib-append  port:openblas
 use_parallel_build  yes
 patch.pre_args-replace  -p0 -p1
 # fix for mpi wrappers
-patchfiles          guessmpidefs.patch
+patchfiles          guessmpidefs.patch \
+                    makefile_noinstall.patch
 
 
-#destroot.post_args  INSTDIR=${destroot}${prefix}
 test.run            no
 
-#build.args  FC=gfortran-mp-14
-#build.args  CC=gcc-mp-14
 build.args  FC=${configure.fc}
 build.args  CC=${configure.cc}
-build.args  INSTALL="echo NWChem is built"
 build.args-append  USE_MPI=1
 build.args-append  USE_64TO32=1
 build.args-append  USE_HWOPT=1
 build.args-append  NWCHEM_MODULES="nwdft driver solvation"
 #build.args-append  SCALAPACK_SIZE=4
 #build.args-append  SCALAPACK="-L${prefix}/lib -lscalapack"
-build.args-append  INSTALL_PREFIX="${prefix}"
 build.args-append  BLAS_SIZE=4
 build.args-append  BLASOPT="-L${prefix}/lib -lopenblas"
 build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
@@ -77,6 +73,8 @@ build.args-append  NWCHEM_TARGET="MACX64"
 build.args-append  V=-1
 
 destroot.target    install
+destroot.args  {*}${build.args}
+destroot.args-append INSTALL_PREFIX=${prefix}
 destroot.destdir   INSTALL_PREFIX=${prefix}
 #destroot {
 #    xinstall -m 755 "${worksrcpath}/../bin/${NWCHEM_TARGET}/nwchem" "${destroot}${prefix}/bin"
