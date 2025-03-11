@@ -1,0 +1,74 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           mpi 1.0
+PortGroup           linear_algebra 1.0
+PortGroup           makefile 1.0
+PortGroup           compilers 1.0
+PortGroup           github 1.0
+
+github.setup        nwchemgit nwchem 7.2.3 v
+
+compilers.add_gcc_rpath_support no
+configure.compiler      macports-gcc-14
+compilers.choose    fc cc 
+compilers.allow_arguments_mismatch yes
+compilers.setup                 require_fortran
+name                nwchem
+version             7.2.3
+revision            0
+categories          science
+platforms           darwin
+license             ECL 2.0
+maintainers         {edoardo.apra@pnnl.gov}
+
+description         High-performance computational chemistry tools
+long_description    High-performance computational chemistry tools
+homepage            https://nwchemgit.github.io
+
+checksums           rmd160  38b29b7232254d6669dc6eb9fadf18b5295f34fe \
+                    sha256  a0f76f12ae2f634d33e76409cd389787e6c458cc2cf05ed453538de2d47a23a5 \
+                    size    234392394
+
+github.tarball_from tarball
+master_sites        https://github.com/nwchemgit/nwchem/releases/download/v${version}-release
+set nwc_hash        d690e065
+set nwc_date        2024-08-27
+distname            nwchem-${version}-release.revision-${nwc_hash}-src.${nwc_date}
+# needed for case-sensitive filesystems
+worksrcdir          nwchem-${version}/src
+
+depends_lib         port:scalapack
+depends_lib-append  port:openblas
+
+
+#mpi.setup           require require_fortran -g95
+
+use_parallel_build  yes
+patch.pre_args-replace  -p0 -p1
+# fix for mpi wrappers
+patchfiles          guessmpidefs.patch
+
+
+destroot.post_args  INSTDIR=${destroot}${prefix}
+test.run            no
+
+#build.args  FC=gfortran-mp-14
+#build.args  CC=gcc-mp-14
+build.args  FC=${configure.fc}
+build.args  CC=${configure.cc}
+build.args-append  USE_MPI=1
+build.args-append  USE_64TO32=1
+build.args-append  USE_HWOPT=1
+build.args-append  NWCHEM_MODULES="nwdft driver solvation"
+build.args-append  SCALAPACK_SIZE=4
+build.args-append  SCALAPACK="-L${prefix}/lib -lscalapack"
+build.args-append  BLAS_SIZE=4
+build.args-append  BLASOPT="-L${prefix}/lib -lopenblas"
+build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
+build.args-append  NWCHEM_TARGET="MACX64"
+
+
+destroot {
+    xinstall -m 755 "${worksrcpath}/../bin/${NWCHEM_TARGET}/nwchem" "${destroot}${prefix}/bin"
+}
