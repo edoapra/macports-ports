@@ -44,7 +44,8 @@ distname            nwchem-${version}-release.revision-${nwc_hash}-src.${nwc_dat
 worksrcdir          nwchem-${version}/src
 
 #depends_lib         port:scalapack
-depends_lib-append  port:openblas
+depends_lib-append   port:openblas
+#depends_build-append port:gmake
 
 
 #mpi.setup           require require_fortran -g95
@@ -70,12 +71,15 @@ build.args-append  BLAS_SIZE=4
 build.args-append  BLASOPT="-L${prefix}/lib -lopenblas"
 build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
 build.args-append  NWCHEM_TARGET="MACX64"
-build.args-append  V=-1
+build.args-append  INSTALL_PREFIX=${prefix}
+#build.args-append  V=-1
+#build.cmd          gmake
+build.target-append install
 
-destroot.target    install
-destroot.args  {*}${build.args}
-destroot.args-append INSTALL_PREFIX=${prefix}
-destroot.destdir   INSTALL_PREFIX=${prefix}
+#destroot.target    install
+#destroot.args  {*}${build.args}
+#destroot.args-append INSTALL_PREFIX=${prefix}
+#destroot.destdir   INSTALL_PREFIX=${prefix}
 #destroot {
 #    xinstall -m 755 "${worksrcpath}/../bin/${NWCHEM_TARGET}/nwchem" "${destroot}${prefix}/bin"
 #}

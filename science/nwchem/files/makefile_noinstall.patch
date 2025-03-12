@@ -36,3 +36,12 @@
  
  configure_ga:
  ifdef OLD_GA
+@@ -255,7 +255,7 @@
+ endif
+ 
+ .PHONY:	install
+-install: link
++install: all
+ 	@test $${INSTALL_PREFIX?Please set the environment variable INSTALL_PREFIX}
+ 	@echo install_prefix is $(INSTALL_PREFIX)
+ 	@mkdir -p $(INSTALL_PREFIX)/bin  $(INSTALL_PREFIX)/share
