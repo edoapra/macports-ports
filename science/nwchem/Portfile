@@ -74,6 +74,11 @@ destroot {
     set share ${prefix}/share
     set bin ${prefix}/bin
     xinstall -m 755 ${worksrcpath}/../bin/MACX64/nwchem ${destroot}${bin}
+    xinstall -d ${destroot}${share}/libraries
+    xinstall -d ${destroot}${share}/libraries/rel-modelpotentials
+    xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries/rel-modelpotentials/*] ${destroot}${share}/libraries/rel-modelpotentials
+    delete ${worksrcpath}/basis/libraries/rel-modelpotentials
+    xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries/*] ${destroot}${share}/libraries
 }
 
 #destroot.target    install
