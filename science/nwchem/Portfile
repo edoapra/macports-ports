@@ -60,7 +60,7 @@ build.args  CC=${configure.cc}
 build.args-append  USE_MPI=1
 build.args-append  USE_64TO32=1
 build.args-append  USE_HWOPT=1
-build.args-append  NWCHEM_MODULES="nwdft driver solvation"
+build.args-append  NWCHEM_MODULES="all"
 #build.args-append  SCALAPACK_SIZE=4
 #build.args-append  SCALAPACK="-L${prefix}/lib -lscalapack"
 build.args-append  BLAS_SIZE=4
@@ -81,7 +81,7 @@ destroot {
     xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries/rel-modelpotentials/*] ${destroot}${share}/libraries/rel-modelpotentials
     delete ${worksrcpath}/basis/libraries/rel-modelpotentials
     xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries/*] ${destroot}${share}/libraries
-    system "echo nwchem_basis_library ${destroot}${share}/libraries/  > ${destroot}${prefix}/etc/nwchemrc"
+    system "echo nwchem_basis_library ${share}/libraries/  > ${destroot}${prefix}/etc/nwchemrc"
 }
 
 #destroot.target    install
