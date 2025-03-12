@@ -10,10 +10,10 @@ PortGroup           github 1.0
 github.setup        nwchemgit nwchem 7.2.3 v
 
 compilers.add_gcc_rpath_support no
-configure.compiler      macports-gcc-14
+configure.compiler  macports-gcc-14
 compilers.choose    fc cc 
 compilers.allow_arguments_mismatch yes
-compilers.setup                 require_fortran
+compilers.setup     require_fortran
 name                nwchem
 version             7.2.3
 revision            0
@@ -40,12 +40,10 @@ set nwc_hash        d690e065
 set nwc_date        2024-08-27
 set NWCHEM_TARGET   MACX64
 distname            nwchem-${version}-release.revision-${nwc_hash}-src.${nwc_date}
-# needed for case-sensitive filesystems
 worksrcdir          nwchem-${version}/src
 
 #depends_lib         port:scalapack
 depends_lib-append   port:openblas
-#depends_build-append port:gmake
 
 
 #mpi.setup           require require_fortran -g95
@@ -55,9 +53,6 @@ patch.pre_args-replace  -p0 -p1
 # fix for mpi wrappers
 patchfiles          guessmpidefs.patch \
                     makefile_noinstall.patch
-
-
-test.run            no
 
 build.args  FC=${configure.fc}
 build.args  CC=${configure.cc}
@@ -73,8 +68,13 @@ build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
 build.args-append  NWCHEM_TARGET="MACX64"
 build.args-append  INSTALL_PREFIX=${prefix}
 #build.args-append  V=-1
-#build.cmd          gmake
-build.target-append install
+#build.target-append install
+
+destroot {
+    set share ${prefix}/share
+    set bin ${prefix}/bin
+    xinstall -m 755 ${worksrcpath}/../bin/MACX64/nwchem ${destroot}${bin}
+}
 
 #destroot.target    install
 #destroot.args  {*}${build.args}
