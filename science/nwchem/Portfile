@@ -11,16 +11,15 @@ github.setup        nwchemgit nwchem 7.2.3 v
 
 compilers.add_gcc_rpath_support no
 configure.compiler  macports-gcc-14
-compilers.choose    fc cc 
+compilers.choose    fc cc
 compilers.allow_arguments_mismatch yes
 compilers.setup     require_fortran
 name                nwchem
 version             7.2.3
 revision            0
 categories          science
-platforms           darwin
-license             ECL 2.0
-maintainers         {edoardo.apra@pnnl.gov}
+license             ECL-2.0
+maintainers         {}
 
 description         High-performance computational chemistry tools
 long_description    The NWChem software contains computational chemistry tools \
@@ -53,7 +52,9 @@ patch.pre_args-replace  -p0 -p1
 # fix for mpi wrappers
 patchfiles          guessmpidefs.patch \
                     makefile_noinstall.patch
-
+post-patch {
+    reinplace  "s|/etc/nwchemrc|${prefix}/etc/nwchemrc|g" ${worksrcpath}/util/util_nwchemrc.F
+    }
 build.args  FC=${configure.fc}
 build.args  CC=${configure.cc}
 build.args-append  USE_MPI=1
@@ -73,12 +74,14 @@ build.args-append  INSTALL_PREFIX=${prefix}
 destroot {
     set share ${prefix}/share
     set bin ${prefix}/bin
+    set etc ${prefix}/etc
     xinstall -m 755 ${worksrcpath}/../bin/MACX64/nwchem ${destroot}${bin}
     xinstall -d ${destroot}${share}/libraries
     xinstall -d ${destroot}${share}/libraries/rel-modelpotentials
     xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries/rel-modelpotentials/*] ${destroot}${share}/libraries/rel-modelpotentials
     delete ${worksrcpath}/basis/libraries/rel-modelpotentials
     xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries/*] ${destroot}${share}/libraries
+    system "echo nwchem_basis_library ${destroot}${share}/libraries/  > ${destroot}${prefix}/etc/nwchemrc"
 }
 
 #destroot.target    install
