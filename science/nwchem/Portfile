@@ -3,9 +3,9 @@
 PortSystem          1.0
 PortGroup           mpi 1.0
 PortGroup           linear_algebra 1.0
-PortGroup           makefile 1.0
 PortGroup           compilers 1.0
 PortGroup           github 1.0
+PortGroup           makefile 1.0
 
 github.setup        nwchemgit nwchem 7.2.3 v
 
@@ -41,8 +41,11 @@ set NWCHEM_TARGET   MACX64
 distname            nwchem-${version}-release.revision-${nwc_hash}-src.${nwc_date}
 worksrcdir          nwchem-${version}/src
 
+set python.version  312
+set python.branch   "[string index ${python.version} 0].[string range ${python.version} 1 end]"
 #depends_lib         port:scalapack
 depends_lib-append   port:openblas
+depends_lib-append   port:python${python.version}
 
 
 #mpi.setup           require require_fortran -g95
@@ -54,13 +57,13 @@ patchfiles          guessmpidefs.patch \
                     makefile_noinstall.patch
 post-patch {
     reinplace  "s|/etc/nwchemrc|${prefix}/etc/nwchemrc|g" ${worksrcpath}/util/util_nwchemrc.F
-    }
+}
 build.args  FC=${configure.fc}
 build.args  CC=${configure.cc}
 build.args-append  USE_MPI=1
 build.args-append  USE_64TO32=1
 build.args-append  USE_HWOPT=1
-build.args-append  NWCHEM_MODULES="all"
+build.args-append  NWCHEM_MODULES="all python"
 #build.args-append  SCALAPACK_SIZE=4
 #build.args-append  SCALAPACK="-L${prefix}/lib -lscalapack"
 build.args-append  BLAS_SIZE=4
@@ -68,8 +71,8 @@ build.args-append  BLASOPT="-L${prefix}/lib -lopenblas"
 build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
 build.args-append  NWCHEM_TARGET="MACX64"
 build.args-append  INSTALL_PREFIX=${prefix}
-#build.args-append  V=-1
-#build.target-append install
+build.args-append  PYTHONVERSION=${python.branch}
+build.args-append  V=-1
 
 destroot {
     set share ${prefix}/share
@@ -81,13 +84,7 @@ destroot {
     xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries/rel-modelpotentials/*] ${destroot}${share}/libraries/rel-modelpotentials
     delete ${worksrcpath}/basis/libraries/rel-modelpotentials
     xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries/*] ${destroot}${share}/libraries
+    xinstall -m 644  {*}[glob ${worksrcpath}/basis/libraries.bse/*] ${destroot}${share}/libraries.bse
     system "echo nwchem_basis_library ${share}/libraries/  > ${destroot}${prefix}/etc/nwchemrc"
 }
 
-#destroot.target    install
-#destroot.args  {*}${build.args}
-#destroot.args-append INSTALL_PREFIX=${prefix}
-#destroot.destdir   INSTALL_PREFIX=${prefix}
-#destroot {
-#    xinstall -m 755 "${worksrcpath}/../bin/${NWCHEM_TARGET}/nwchem" "${destroot}${prefix}/bin"
-#}
