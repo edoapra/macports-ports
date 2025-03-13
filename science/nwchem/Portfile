@@ -8,8 +8,7 @@ PortGroup           github 1.0
 PortGroup           makefile 1.0
 
 github.setup        nwchemgit nwchem 7.2.3 v
-default_variants    +gcc14 +mpich
-compilers.add_gcc_rpath_support no
+configure.compiler  macports-gcc-14
 compilers.choose    fc cc
 compilers.allow_arguments_mismatch yes
 compilers.setup     require_fortran
