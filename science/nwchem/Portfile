@@ -10,8 +10,6 @@ PortGroup           makefile 1.0
 github.setup        nwchemgit nwchem 7.2.3 v
 default_variants    +gcc14 +mpich
 compilers.add_gcc_rpath_support no
-#configure.compiler  macports-gcc-14
-configure.cflags-append     -std=gnu89
 compilers.choose    fc cc
 compilers.allow_arguments_mismatch yes
 compilers.setup     require_fortran
@@ -46,6 +44,7 @@ set python.version  313
 set python.branch   "[string index ${python.version} 0].[string range ${python.version} 1 end]"
 depends_lib-append   port:openblas
 depends_lib-append   port:python${python.version}
+depends_lib-append   port:libxc6
 
 
 #mpi.setup           require require_fortran -g95
@@ -67,7 +66,6 @@ build.args-append  MPICC=mpicc-mpich-mp
 build.args-append  USE_64TO32=1
 build.args-append  USE_HWOPT=1
 build.args-append  NWCHEM_MODULES="all python"
-#build.args-append  NWCHEM_MODULES="nwdft driver stepper python"
 build.args-append  SCALAPACK_SIZE=4
 build.args-append  BUILD_SCALAPACK=1
 build.args-append  BLAS_SIZE=4
@@ -76,6 +74,8 @@ build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
 build.args-append  NWCHEM_TARGET="MACX64"
 build.args-append  INSTALL_PREFIX=${prefix}
 build.args-append  PYTHONVERSION=${python.branch}
+build.args-append  LIBXC_LIB=${prefix}/libexec/libxc6/lib
+build.args-append  LIBXC_INCLUDE=${prefix}/libexec/libxc6/include
 build.args-append  V=-1
 
 destroot {
