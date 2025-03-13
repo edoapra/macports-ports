@@ -54,7 +54,7 @@ patch.pre_args-replace  -p0 -p1
 # fix for mpi wrappers
 patchfiles          guessmpidefs.patch \
                     makefile_noinstall.patch \
-                    scalapack.patch 
+                    scalapack.patch
 post-patch {
     reinplace  "s|/etc/nwchemrc|${prefix}/etc/nwchemrc|g" ${worksrcpath}/util/util_nwchemrc.F
 }
@@ -77,6 +77,15 @@ build.args-append  PYTHONVERSION=${python.branch}
 build.args-append  LIBXC_LIB=${prefix}/libexec/libxc6/lib
 build.args-append  LIBXC_INCLUDE=${prefix}/libexec/libxc6/include
 build.args-append  V=-1
+
+
+test.run            yes
+
+# note: a few QA tests
+test {
+    ui_msg "Running some QA tests"
+    system -W ${worksrcpath}/../QA "MPIRUN_PATH=${prefix}/bin/mpirun-mpich-mp  ./runtests.mpi.unix procs 2 libxc_li2freq dft_he2+ cosmo_h2o_dft h2o_opt ritddft_pyridine h2o2-response"
+}
 
 destroot {
     set share ${prefix}/share
