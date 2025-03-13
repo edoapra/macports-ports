@@ -8,9 +8,10 @@ PortGroup           github 1.0
 PortGroup           makefile 1.0
 
 github.setup        nwchemgit nwchem 7.2.3 v
-
+default_variants    +gcc14 +mpich
 compilers.add_gcc_rpath_support no
-configure.compiler  macports-gcc-14
+#configure.compiler  macports-gcc-14
+configure.cflags-append     -std=gnu89
 compilers.choose    fc cc
 compilers.allow_arguments_mismatch yes
 compilers.setup     require_fortran
@@ -41,9 +42,8 @@ set NWCHEM_TARGET   MACX64
 distname            nwchem-${version}-release.revision-${nwc_hash}-src.${nwc_date}
 worksrcdir          nwchem-${version}/src
 
-set python.version  312
+set python.version  313
 set python.branch   "[string index ${python.version} 0].[string range ${python.version} 1 end]"
-#depends_lib         port:scalapack
 depends_lib-append   port:openblas
 depends_lib-append   port:python${python.version}
 
@@ -54,19 +54,22 @@ use_parallel_build  yes
 patch.pre_args-replace  -p0 -p1
 # fix for mpi wrappers
 patchfiles          guessmpidefs.patch \
-                    makefile_noinstall.patch
+                    makefile_noinstall.patch \
+                    scalapack.patch 
 post-patch {
     reinplace  "s|/etc/nwchemrc|${prefix}/etc/nwchemrc|g" ${worksrcpath}/util/util_nwchemrc.F
 }
 build.args  FC=${configure.fc}
 build.args  CC=${configure.cc}
 build.args-append  USE_MPI=1
+build.args-append  MPIF90=mpifort-mpich-mp
+build.args-append  MPICC=mpicc-mpich-mp
 build.args-append  USE_64TO32=1
 build.args-append  USE_HWOPT=1
-#build.args-append  NWCHEM_MODULES="all python"
-build.args-append  NWCHEM_MODULES="nwdft driver stepper python"
-#build.args-append  SCALAPACK_SIZE=4
-#build.args-append  SCALAPACK="-L${prefix}/lib -lscalapack"
+build.args-append  NWCHEM_MODULES="all python"
+#build.args-append  NWCHEM_MODULES="nwdft driver stepper python"
+build.args-append  SCALAPACK_SIZE=4
+build.args-append  BUILD_SCALAPACK=1
 build.args-append  BLAS_SIZE=4
 build.args-append  BLASOPT="-L${prefix}/lib -lopenblas"
 build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
@@ -92,6 +95,7 @@ destroot {
     xinstall -d ${destroot}${share}/libraryps/library2
     xinstall -d ${destroot}${share}/libraryps/pspw_default
     xinstall -d ${destroot}${share}/libraryps/paw_default
+    delete ${worksrcpath}/nwpw/libraryps/paw_default/JUNK
     xinstall -m 644 {*}[glob ${worksrcpath}/nwpw/libraryps/library1/*] ${destroot}${share}/libraryps/library1
     xinstall -m 644 {*}[glob ${worksrcpath}/nwpw/libraryps/library2/*] ${destroot}${share}/libraryps/library2
     xinstall -m 644 {*}[glob ${worksrcpath}/nwpw/libraryps/pspw_default/*] ${destroot}${share}/libraryps/pspw_default
