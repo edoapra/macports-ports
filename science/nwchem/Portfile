@@ -70,10 +70,10 @@ build.args-append  USE_64TO32=1
 build.args-append  USE_HWOPT=1
 build.args-append  NWCHEM_MODULES="all python"
 build.args-append  SCALAPACK_SIZE=4
-if {${os.major} < 14} {
+if {${os.major} < 23} {
     build.args-append  SCALAPACK_LIB="-L${prefix}/lib/ -lscalapack"
 } else  {
-# -Wl,-ld_classic fixes libscalapack "duplicate RC_PATH" error on Sequoia M1 Macs
+# -Wl,-ld_classic fixes libscalapack "duplicate RC_PATH" error on macos-14 and macos-15
     build.args-append  SCALAPACK_LIB="-Wl,-ld_classic -L${prefix}/lib/ -lscalapack"
 }
 build.args-append  CFLAGS_FORGA="-fPIC -Wl,-rpath,${prefix}/lib/libgcc -L${prefix}/lib/libgcc"
