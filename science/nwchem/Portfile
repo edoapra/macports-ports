@@ -12,6 +12,7 @@ github.setup        nwchemgit nwchem 7.2.3 v
 #configure.compiler  macports-gcc-14
 compilers.choose    fc cc
 compilers.allow_arguments_mismatch yes
+#compilers.add_gcc_rpath_support no
 compilers.setup     require_fortran
 name                nwchem
 version             7.2.3
@@ -69,11 +70,12 @@ build.args-append  USE_HWOPT=1
 #build.args-append  NWCHEM_MODULES="all python"
 build.args-append  NWCHEM_MODULES="nwdft driver"
 build.args-append  SCALAPACK_SIZE=4
-build.args-append  SCALAPACK_LIB="-L${prefix}/lib/ -lscalapack"
+# ld_classic need for libscalapack to avoid "duplicate RC_PATH" error 
+build.args-append  SCALAPACK_LIB="-L${prefix}/lib/ -lscalapack -Wl,-ld_classic"
 #build.args-append  BUILD_SCALAPACK=1
 build.args-append  CFLAGS_FORGA="-fPIC -Wl,-rpath,${prefix}/lib/libgcc -L${prefix}/lib/libgcc"
 build.args-append  FFLAG_INT="-fdefault-integer-8"
-#build.args-append  FFLAGS_FORGA="-Wl,-rpath,${prefix}/lib/libgcc -L${prefix}/lib/libgcc"
+#build.args-append  FFLAGS_FORGA="-Wl,-ld_classic"
 build.args-append  BLAS_SIZE=4
 build.args-append  BLASOPT="-L${prefix}/lib -lopenblas"
 build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
