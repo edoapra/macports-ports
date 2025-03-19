@@ -9,7 +9,7 @@ PortGroup           makefile 1.0
 
 github.setup        nwchemgit nwchem 7.2.3 v
 
-configure.compiler  macports-gcc-14
+#configure.compiler  macports-gcc-14
 compilers.choose    fc cc
 compilers.allow_arguments_mismatch yes
 compilers.setup     require_fortran
@@ -47,8 +47,8 @@ depends_lib-append   port:python${python.version}
 depends_lib-append   port:libxc6
 
 
-#mpi.setup           require require_fortran -g95
-default_variants     +mpich
+mpi.setup           require require_fortran
+#default_variants     +mpich
 
 use_parallel_build  yes
 patch.pre_args-replace  -p0 -p1
