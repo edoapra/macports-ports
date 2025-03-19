@@ -45,7 +45,7 @@ set python.branch   "[string index ${python.version} 0].[string range ${python.v
 depends_lib-append   port:openblas
 depends_lib-append   port:python${python.version}
 depends_lib-append   port:libxc6
-
+depends_lib-append   port:scalapack
 
 mpi.setup           require require_fortran
 #default_variants     +mpich
@@ -68,11 +68,12 @@ build.args-append  USE_64TO32=1
 build.args-append  USE_HWOPT=1
 #build.args-append  NWCHEM_MODULES="all python"
 build.args-append  NWCHEM_MODULES="nwdft driver"
-#build.args-append  SCALAPACK_SIZE=4
+build.args-append  SCALAPACK_SIZE=4
+build.args-append  SCALAPACK_LIB="-L${prefix}/lib/ -lscalapack"
 #build.args-append  BUILD_SCALAPACK=1
 build.args-append  CFLAGS_FORGA="-fPIC -Wl,-rpath,${prefix}/lib/libgcc -L${prefix}/lib/libgcc"
 build.args-append  FFLAG_INT="-fdefault-integer-8"
-build.args-append  FFLAGS_FORGA="-Wl,-rpath,${prefix}/lib/libgcc -L${prefix}/lib/libgcc"
+#build.args-append  FFLAGS_FORGA="-Wl,-rpath,${prefix}/lib/libgcc -L${prefix}/lib/libgcc"
 build.args-append  BLAS_SIZE=4
 build.args-append  BLASOPT="-L${prefix}/lib -lopenblas"
 build.args-append  LAPACK_LIB="-L${prefix}/lib -lopenblas"
@@ -82,10 +83,10 @@ build.args-append  PYTHONVERSION=${python.branch}
 build.args-append  LIBXC_LIB=${prefix}/libexec/libxc6/lib
 build.args-append  LIBXC_INCLUDE=${prefix}/libexec/libxc6/include
 build.args-append  V=1
-build.args-append  MRCC_METHODS=y
-build.args-append  EACCSD=y
-build.args-append  IPCCSD=y
-build.args-append  CCSDTQ=TRUE
+#build.args-append  MRCC_METHODS=y
+#build.args-append  EACCSD=y
+#build.args-append  IPCCSD=y
+#build.args-append  CCSDTQ=TRUE
 
 
 test.run            yes
