@@ -61,10 +61,13 @@ post-patch {
 }
 build.args  FC=${configure.fc}
 build.args  CC=${configure.cc}
+build.args-append  _FC=gfortran
+build.args-append  _CC=gcc
 build.args-append  USE_MPI=1
 build.args-append  USE_64TO32=1
 build.args-append  USE_HWOPT=1
-build.args-append  NWCHEM_MODULES="all python"
+#build.args-append  NWCHEM_MODULES="all python"
+build.args-append  NWCHEM_MODULES="nwdft driver"
 #build.args-append  SCALAPACK_SIZE=4
 #build.args-append  BUILD_SCALAPACK=1
 build.args-append  CFLAGS_FORGA="-fPIC -Wl,-rpath,${prefix}/lib/libgcc -L${prefix}/lib/libgcc"
@@ -78,7 +81,7 @@ build.args-append  INSTALL_PREFIX=${prefix}
 build.args-append  PYTHONVERSION=${python.branch}
 build.args-append  LIBXC_LIB=${prefix}/libexec/libxc6/lib
 build.args-append  LIBXC_INCLUDE=${prefix}/libexec/libxc6/include
-build.args-append  V=-1
+build.args-append  V=1
 build.args-append  MRCC_METHODS=y
 build.args-append  EACCSD=y
 build.args-append  IPCCSD=y
