@@ -105,6 +105,7 @@ destroot {
     set bin ${prefix}/bin
     set etc ${prefix}/etc
     xinstall -m 755 ${worksrcpath}/../bin/MACX64/nwchem ${destroot}${bin}
+    xinstall -d ${destroot}${share}/nwchem
     xinstall -d ${destroot}${share}/nwchem/libraries
     xinstall -d ${destroot}${share}/nwchem/libraries.bse
     xinstall -d ${destroot}${share}/nwchem/libraries/rel-modelpotentials
