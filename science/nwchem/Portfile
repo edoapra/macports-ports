@@ -19,7 +19,7 @@ version             7.2.3
 revision            0
 categories          science
 license             ECL-2.0
-maintainers         {reneeotten @reneeotten} openmaintainer
+maintainers         nomaintainer
 
 description         High-performance computational chemistry tools
 long_description    The NWChem software contains computational chemistry tools \
